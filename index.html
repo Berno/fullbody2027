@@ -218,6 +218,48 @@
             font-size: 13px
         }
 
+
+        .timer-row {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            width: 100%;
+            margin-top: 2px
+        }
+
+        .timer-display {
+            flex: 0 0 76px;
+            min-width: 0;
+            font-size: 20px;
+            line-height: 32px;
+            font-weight: 800;
+            font-variant-numeric: tabular-nums;
+            text-align: center;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: var(--bg)
+        }
+
+        .timer-actions {
+            display: flex;
+            gap: 4px;
+            flex: 1;
+            min-width: 0
+        }
+
+        .timer-actions button {
+            flex: 1;
+            min-width: 0;
+            height: 32px;
+            padding: 0 7px;
+            font-size: 12px;
+            white-space: nowrap
+        }
+
+        .timer-running {
+            color: var(--accent)
+        }
+
         @media(min-width:700px) {
             .wrap {
                 padding: 9px 12px
@@ -254,6 +296,14 @@
                             id="copySummary">Copia per ChatGPT</button><button id="exportCsv">Esporta
                             CSV</button><button id="importBtn">Ripristina backup</button><button class="danger"
                             id="resetWeek">Azzera settimana</button></div>
+                </div>
+            </div>
+            <div class="timer-row" aria-label="Timer recupero">
+                <div class="timer-display" id="timerDisplay" aria-live="polite">00:00</div>
+                <div class="timer-actions">
+                    <button type="button" class="primary" id="timerStart">Avvia</button>
+                    <button type="button" id="timerStop">Stop</button>
+                    <button type="button" id="timerReset">Reset</button>
                 </div>
             </div>
             <div class="status" id="status">Pronto</div>
@@ -298,7 +348,55 @@
                     { exercise: "Pushdown", sets: 3, reps: "8-10", rir: "1 / 1 / 0", rest: "2'" }]
             };
             var STORAGE_KEY = "fullBodyTrackerV7", TOTAL_WEEKS = 8, currentWeek = 1, currentDay = "A";
-            var weekSelect = document.getElementById("weekSelect"), daySelect = document.getElementById("daySelect"), exerciseList = document.getElementById("exerciseList"), currentDayTitle = document.getElementById("currentDayTitle"), statusEl = document.getElementById("status"), importFile = document.getElementById("importFile"), menu = document.getElementById("menu");
+            var weekSelect = document.getElementById("weekSelect"), daySelect = document.getElementById("daySelect"), exerciseList = document.getElementById("exerciseList"), currentDayTitle = document.getElementById("currentDayTitle"), statusEl = document.getElementById("status"), importFile = document.getElementById("importFile"), menu = document.getElementById("menu"), timerDisplay = document.getElementById("timerDisplay"), timerStart = document.getElementById("timerStart"), timerStop = document.getElementById("timerStop"), timerReset = document.getElementById("timerReset");
+
+            var timerElapsedMs = 0, timerStartedAt = null, timerInterval = null;
+
+            function timerTotalMs() {
+                return timerElapsedMs + (timerStartedAt !== null ? Date.now() - timerStartedAt : 0)
+            }
+
+            function formatTimer(ms) {
+                var totalSeconds = Math.floor(Math.max(0, ms) / 1000);
+                var minutes = Math.floor(totalSeconds / 60);
+                var seconds = totalSeconds % 60;
+                return String(minutes).padStart(2, "0") + ":" + String(seconds).padStart(2, "0")
+            }
+
+            function updateTimerDisplay() {
+                timerDisplay.textContent = formatTimer(timerTotalMs());
+                if (timerStartedAt !== null) timerDisplay.classList.add("timer-running");
+                else timerDisplay.classList.remove("timer-running")
+            }
+
+            function startTimer() {
+                if (timerStartedAt !== null) return;
+                timerStartedAt = Date.now();
+                updateTimerDisplay();
+                timerInterval = setInterval(updateTimerDisplay, 250)
+            }
+
+            function stopTimer() {
+                if (timerStartedAt === null) return;
+                timerElapsedMs += Date.now() - timerStartedAt;
+                timerStartedAt = null;
+                if (timerInterval !== null) {
+                    clearInterval(timerInterval);
+                    timerInterval = null
+                }
+                updateTimerDisplay()
+            }
+
+            function resetTimer() {
+                timerElapsedMs = 0;
+                timerStartedAt = null;
+                if (timerInterval !== null) {
+                    clearInterval(timerInterval);
+                    timerInterval = null
+                }
+                updateTimerDisplay()
+            }
+
             function emptyStore() { return { version: 4, updatedAt: null, weeks: {} } } function loadStore() { try { var raw = localStorage.getItem(STORAGE_KEY); if (!raw) return emptyStore(); var p = JSON.parse(raw); return p && p.weeks ? p : emptyStore() } catch (e) { return emptyStore() } } var store = loadStore();
             function saveStore() { store.updatedAt = new Date().toISOString(); try { localStorage.setItem(STORAGE_KEY, JSON.stringify(store)) } catch (e) { } statusEl.textContent = "Salvato " + new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) }
             function ensureWeek(w) { if (!store.weeks[w]) store.weeks[w] = { A: {}, B: {}, C: {} }; if (!store.weeks[w].A) store.weeks[w].A = {}; if (!store.weeks[w].B) store.weeks[w].B = {}; if (!store.weeks[w].C) store.weeks[w].C = {}; return store.weeks[w] }
@@ -314,7 +412,7 @@
             function buildSummary() { var t = "FULL BODY V7 - PROGRESSI\n"; for (var w = 1; w <= TOTAL_WEEKS; w++) { var week = store.weeks[w]; if (!week) continue; var wt = "";["A", "B", "C"].forEach(function (d) { var lines = []; PLAN[d].forEach(function (ex, ei) { var saved = week[d] && week[d][ei]; if (!saved) return; var ss = []; for (var si = 0; si < ex.sets; si++) { var s = saved.sets && saved.sets[si] ? saved.sets[si] : {}; if (s.weight || s.reps || s.rir) ss.push("S" + (si + 1) + ": " + (s.weight || "?") + "kg x " + (s.reps || "?") + " @RIR " + (s.rir || "?")) } if (ss.length || saved.note) { var line = "- " + ex.exercise + ": " + ss.join(" | "); if (saved.note) line += " | Note: " + saved.note; lines.push(line) } }); if (lines.length) wt += "Giorno " + d + "\n" + lines.join("\n") + "\n" }); if (wt) t += "\n=== SETTIMANA " + w + " ===\n" + wt } return t }
             function copySummary() { var text = buildSummary(); if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(text).then(function () { statusEl.textContent = "Riepilogo copiato" }).catch(function () { downloadFile("full_body_v7_riepilogo.txt", text, "text/plain;charset=utf-8") }) } else downloadFile("full_body_v7_riepilogo.txt", text, "text/plain;charset=utf-8") }
             function importBackup(file) { var r = new FileReader(); r.onload = function () { try { var obj = JSON.parse(r.result), incoming = obj.data || obj; if (!incoming.weeks) throw new Error(); store = incoming; saveStore(); renderDay(); statusEl.textContent = "Backup ripristinato" } catch (e) { alert("Backup non valido") } }; r.readAsText(file) }
-            weekSelect.addEventListener("change", function () { currentWeek = Number(weekSelect.value); renderDay() }); daySelect.addEventListener("change", function () { currentDay = daySelect.value; renderDay() }); document.getElementById("menuToggle").addEventListener("click", function (e) { e.stopPropagation(); menu.classList.toggle("open") }); document.addEventListener("click", function () { menu.classList.remove("open") }); document.querySelector(".menu-panel").addEventListener("click", function (e) { e.stopPropagation() }); document.getElementById("exportJson").addEventListener("click", exportJSON); document.getElementById("exportCsv").addEventListener("click", exportCSV); document.getElementById("copySummary").addEventListener("click", copySummary); document.getElementById("importBtn").addEventListener("click", function () { importFile.click() }); document.getElementById("resetWeek").addEventListener("click", function () { if (confirm("Vuoi cancellare tutti i dati della settimana " + currentWeek + "?")) { delete store.weeks[currentWeek]; saveStore(); renderDay() } }); importFile.addEventListener("change", function () { if (importFile.files && importFile.files[0]) importBackup(importFile.files[0]); importFile.value = "" }); populateWeeks(); renderDay();
+            weekSelect.addEventListener("change", function () { currentWeek = Number(weekSelect.value); renderDay() }); daySelect.addEventListener("change", function () { currentDay = daySelect.value; renderDay() }); document.getElementById("menuToggle").addEventListener("click", function (e) { e.stopPropagation(); menu.classList.toggle("open") }); document.addEventListener("click", function () { menu.classList.remove("open") }); document.querySelector(".menu-panel").addEventListener("click", function (e) { e.stopPropagation() }); document.getElementById("exportJson").addEventListener("click", exportJSON); document.getElementById("exportCsv").addEventListener("click", exportCSV); document.getElementById("copySummary").addEventListener("click", copySummary); document.getElementById("importBtn").addEventListener("click", function () { importFile.click() }); document.getElementById("resetWeek").addEventListener("click", function () { if (confirm("Vuoi cancellare tutti i dati della settimana " + currentWeek + "?")) { delete store.weeks[currentWeek]; saveStore(); renderDay() } }); importFile.addEventListener("change", function () { if (importFile.files && importFile.files[0]) importBackup(importFile.files[0]); importFile.value = "" }); timerStart.addEventListener("click", startTimer); timerStop.addEventListener("click", stopTimer); timerReset.addEventListener("click", resetTimer); updateTimerDisplay(); populateWeeks(); renderDay();
         })();
     </script>
 </body>
