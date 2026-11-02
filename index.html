@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
     <meta name="theme-color" content="#1769e0">
-    <title>Full Body Tracker V9</title>
+    <title>Full Body Tracker V10</title>
     <link rel="manifest" href="./manifest-v2.webmanifest">
     <link rel="icon" type="image/png" sizes="192x192" href="./icon-192-v2.png">
     <link rel="icon" type="image/png" sizes="512x512" href="./icon-512-v2.png">
@@ -260,6 +260,16 @@
             color: var(--accent)
         }
 
+
+        .guide {margin:12px 0 24px;border:1px solid var(--line);border-radius:11px;background:var(--card);font-size:13px}
+        .guide summary {cursor:pointer;padding:12px;font-weight:700}
+        .guide-body {padding:0 12px 10px;line-height:1.5}
+        .guide-body p {margin:8px 0}
+        .extra-fields {display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;margin-top:10px}
+        .extra-fields label {display:flex;flex-direction:column;gap:4px;min-width:0;font-size:11px;color:var(--muted);font-weight:700}
+        .extra-fields input {width:100%;min-width:0;font-size:16px;padding:8px;border:1px solid var(--line);border-radius:8px}
+        .next-hint {font-size:10px;color:var(--muted);font-weight:400}
+
         @media(min-width:700px) {
             .wrap {
                 padding: 9px 12px
@@ -284,7 +294,7 @@
     <header>
         <div class="wrap">
             <div class="topline">
-                <h1>Full Body V9</h1>
+                <h1>Full Body V10</h1>
                 <div class="selects"><select id="weekSelect" aria-label="Settimana"></select><select id="daySelect"
                         aria-label="Giorno">
                         <option value="A">Giorno A</option>
@@ -312,6 +322,16 @@
     <main class="wrap">
         <h2 class="day-title" id="currentDayTitle"></h2>
         <div id="exerciseList"></div>
+        <details class="guide"><summary>Indicazioni V10 · progressione e recupero</summary>
+            <div class="guide-body">
+                <p><strong>Progressione:</strong> aumenta il carico solo quando le serie sono nel range con RIR e tecnica coerenti. Le prime serie non devono raggiungere sistematicamente il cedimento; sulla maggior parte dei fondamentali mantieni almeno 1 RIR anche nell’ultima.</p>
+                <p><strong>Recuperi:</strong> circa 3–4 minuti sui fondamentali, 2–3 minuti sugli altri esercizi secondo necessità. L’ordine può variare in base alle postazioni: annota quello effettivo.</p>
+                <p><strong>Carico prossimo allenamento:</strong> scrivilo nel box dell’esercizio, dopo la seduta. Aprendo il giorno corrispondente della settimana successiva il peso verrà proposto nella <strong>prima serie</strong>, se ancora vuota. Le altre serie resteranno vuote.</p>
+                <p><strong>Tecnica:</strong> lato sinistro per primo nelle alzate laterali e ripetizioni complete conteggiate separatamente dalle parziali. Hammer curl e overhead con manubri 10–12; calf raise 10–15 e ROM completo. Non forzare alcuna estensione tricipiti che provochi dolore al gomito.</p>
+                <p><strong>Programma:</strong> W1 V7 · W2–4 V8 · W5–8 V9 · W9–16 V10. Nessuno scarico obbligatorio, ma riduci il lavoro se recupero o articolazioni peggiorano. Backup JSON periodico consigliato.</p>
+            </div>
+        </details>
+
     </main>
     <input id="importFile" type="file" accept=".json,application/json" hidden>
     <script>
@@ -320,11 +340,12 @@
             var PLAN_V7 = {"A": [{"exercise": "Squat / Hack squat", "sets": 3, "reps": "6-8", "rir": "2 / 1 / 1", "rest": "3-4'"}, {"exercise": "Pulley presa larga - upper back", "sets": 3, "reps": "8-10", "rir": "2 / 1 / 0-1", "rest": "3'"}, {"exercise": "Military / Shoulder press", "sets": 3, "reps": "6-8", "rir": "2 / 1 / 0-1", "rest": "3'"}, {"exercise": "Chest press", "sets": 3, "reps": "8-10", "rir": "1 / 1 / 0-1", "rest": "3'"}, {"exercise": "Leg curl seduto", "sets": 3, "reps": "8-10", "rir": "1 / 0-1 / 0", "rest": "2-3'"}, {"exercise": "Preacher / Panca Scott curl", "sets": 3, "reps": "8-10", "rir": "1 / 1 / 0", "rest": "2'"}, {"exercise": "Overhead triceps extension", "sets": 3, "reps": "8-10", "rir": "1 / 1 / 0", "rest": "2'"}, {"exercise": "Calf raise", "sets": 3, "reps": "8-10", "rir": "1 / 0 / 0*", "rest": "2'"}], "B": [{"exercise": "Lat machine presa medio-larga", "sets": 3, "reps": "6-8", "rir": "2 / 1 / 0-1", "rest": "3'"}, {"exercise": "Hip thrust", "sets": 3, "reps": "6-8", "rir": "2 / 1 / 0-1", "rest": "3-4'"}, {"exercise": "Spinte inclinate manubri / multipower", "sets": 3, "reps": "8-10", "rir": "1 / 1 / 0-1", "rest": "3'"}, {"exercise": "Leg extension", "sets": 3, "reps": "8-10", "rir": "1 / 0-1 / 0", "rest": "2-3'"}, {"exercise": "Pulley in cifosi - focus grandorsale", "sets": 3, "reps": "8-10", "rir": "1 / 1 / 0-1", "rest": "2-3'"}, {"exercise": "Alzate laterali", "sets": 4, "reps": "10-12", "rir": "2 / 1 / 1 / 0", "rest": "2'"}, {"exercise": "Bayesian curl", "sets": 2, "reps": "8-10", "rir": "1 / 0", "rest": "2'"}, {"exercise": "French press", "sets": 2, "reps": "8-10", "rir": "1 / 0", "rest": "2'"}, {"exercise": "Abduzioni", "sets": 3, "reps": "10-12", "rir": "1 / 1 / 0", "rest": "2'"}], "C": [{"exercise": "Panca piana", "sets": 3, "reps": "6-8", "rir": "2 / 1 / 0-1", "rest": "3-4'"}, {"exercise": "Stacco rumeno / RDL", "sets": 3, "reps": "6-8", "rir": "2 / 2 / 1-2 tecnico", "rest": "3-4'"}, {"exercise": "Lat machine presa stretta / supina", "sets": 3, "reps": "8-10", "rir": "1 / 1 / 0-1", "rest": "3'"}, {"exercise": "Pressa ROM profondo", "sets": 3, "reps": "6-8", "rir": "2 / 1 / 1", "rest": "3-4'"}, {"exercise": "Pec fly", "sets": 3, "reps": "8-10", "rir": "1 / 1 / 0", "rest": "2'"}, {"exercise": "Deltoide posteriore al cavo", "sets": 3, "reps": "10-12", "rir": "1 / 1 / 0", "rest": "2'"}, {"exercise": "Hammer curl", "sets": 3, "reps": "8-10", "rir": "1 / 1 / 0", "rest": "2'"}, {"exercise": "Pushdown", "sets": 3, "reps": "8-10", "rir": "1 / 1 / 0", "rest": "2'"}]};
             var PLAN_V8 = {"A": [{"exercise": "Squat / Hack squat", "sets": 3, "reps": "6-8", "rir": "2 / 1 / 1", "rest": "3-4'"}, {"exercise": "Pulley presa larga - upper back", "sets": 3, "reps": "8-10", "rir": "2 / 1 / 0-1", "rest": "3'"}, {"exercise": "Military / Shoulder press", "sets": 3, "reps": "6-8", "rir": "2 / 1 / 0-1", "rest": "3'"}, {"exercise": "Chest press", "sets": 3, "reps": "8-10", "rir": "1 / 1 / 0-1", "rest": "3'"}, {"exercise": "Leg curl seduto", "sets": 3, "reps": "8-10", "rir": "1 / 0-1 / 0", "rest": "2-3'"}, {"exercise": "Preacher / Panca Scott curl", "sets": 2, "reps": "8-10", "rir": "1 / 0", "rest": "2'"}, {"exercise": "Overhead triceps extension", "sets": 2, "reps": "8-10", "rir": "1 / 0", "rest": "2'"}, {"exercise": "Calf raise", "sets": 3, "reps": "8-10", "rir": "1 / 0 / 0*", "rest": "2'"}], "B": [{"exercise": "Lat machine presa medio-larga", "sets": 3, "reps": "6-8", "rir": "2 / 1 / 0-1", "rest": "3'"}, {"exercise": "Hip thrust", "sets": 3, "reps": "6-8", "rir": "2 / 1 / 0-1", "rest": "3-4'"}, {"exercise": "Spinte inclinate manubri / multipower", "sets": 3, "reps": "8-10", "rir": "1 / 1 / 0-1", "rest": "3'"}, {"exercise": "Leg extension", "sets": 2, "reps": "8-10", "rir": "1 / 0", "rest": "2-3'"}, {"exercise": "Pulley in cifosi - focus grandorsale", "sets": 2, "reps": "8-10", "rir": "1 / 0-1", "rest": "2-3'"}, {"exercise": "Alzate laterali", "sets": 3, "reps": "10-12", "rir": "2 / 1 / 0", "rest": "2'"}, {"exercise": "Bayesian curl", "sets": 2, "reps": "8-10", "rir": "1 / 0", "rest": "2'"}, {"exercise": "French press", "sets": 2, "reps": "8-10", "rir": "1 / 0", "rest": "2'"}], "C": [{"exercise": "Panca piana", "sets": 3, "reps": "6-8", "rir": "2 / 1 / 0-1", "rest": "3-4'"}, {"exercise": "Stacco rumeno / RDL", "sets": 3, "reps": "6-8", "rir": "2 / 2 / 1-2 tecnico", "rest": "3-4'"}, {"exercise": "Lat machine presa stretta / supina", "sets": 3, "reps": "8-10", "rir": "1 / 1 / 0-1", "rest": "3'"}, {"exercise": "Pressa ROM profondo", "sets": 3, "reps": "6-8", "rir": "2 / 1 / 1", "rest": "3-4'"}, {"exercise": "Pec fly", "sets": 3, "reps": "8-10", "rir": "1 / 1 / 0", "rest": "2'"}, {"exercise": "Deltoide posteriore al cavo", "sets": 3, "reps": "10-12", "rir": "1 / 1 / 0", "rest": "2'"}, {"exercise": "Hammer curl", "sets": 2, "reps": "8-10", "rir": "1 / 0", "rest": "2'"}, {"exercise": "Pushdown", "sets": 2, "reps": "8-10", "rir": "1 / 0", "rest": "2'"}]};
             var PLAN_V9 = {"A": [{"exercise": "Squat / Hack squat", "sets": 3, "reps": "6-8", "rir": "2 / 1 / 1", "rest": "3-4'"}, {"exercise": "Pulley presa larga - upper back", "sets": 4, "reps": "8-10", "rir": "2 / 1 / 1 / 0-1", "rest": "3'"}, {"exercise": "Military / Shoulder press", "sets": 3, "reps": "6-8", "rir": "2 / 1 / 0-1", "rest": "3'"}, {"exercise": "Chest press", "sets": 3, "reps": "8-10", "rir": "1 / 1 / 0-1", "rest": "3'"}, {"exercise": "Leg curl seduto", "sets": 3, "reps": "8-10", "rir": "1 / 0-1 / 0", "rest": "2-3'"}, {"exercise": "Preacher / Panca Scott curl", "sets": 2, "reps": "8-10", "rir": "1 / 0", "rest": "2'"}, {"exercise": "Overhead triceps extension al cavo", "sets": 2, "reps": "8-10", "rir": "1 / 0", "rest": "2'"}, {"exercise": "Calf raise", "sets": 3, "reps": "8-10", "rir": "1 / 0 / 0*", "rest": "2'"}], "B": [{"exercise": "Lat machine presa medio-larga", "sets": 3, "reps": "6-8", "rir": "2 / 1 / 0-1", "rest": "3'"}, {"exercise": "Hip thrust", "sets": 3, "reps": "6-8", "rir": "2 / 1 / 0-1", "rest": "3-4'"}, {"exercise": "Spinte inclinate manubri / multipower", "sets": 3, "reps": "8-10", "rir": "1 / 1 / 0-1", "rest": "3'"}, {"exercise": "Leg extension", "sets": 2, "reps": "8-10", "rir": "1 / 0", "rest": "2-3'"}, {"exercise": "Pulley in cifosi - focus grandorsale", "sets": 2, "reps": "8-10", "rir": "1 / 0-1", "rest": "2-3'"}, {"exercise": "Alzate laterali", "sets": 3, "reps": "10-12", "rir": "2 / 1 / 0", "rest": "2'"}, {"exercise": "Bayesian curl", "sets": 2, "reps": "8-10", "rir": "1 / 0", "rest": "2'"}, {"exercise": "Pushdown", "sets": 2, "reps": "8-10", "rir": "1 / 0", "rest": "2'"}], "C": [{"exercise": "Panca piana", "sets": 3, "reps": "6-8", "rir": "2 / 1 / 0-1", "rest": "3-4'"}, {"exercise": "Leg curl seduto", "sets": 3, "reps": "8-10", "rir": "1 / 0-1 / 0", "rest": "2-3'"}, {"exercise": "Lat machine presa stretta / supina", "sets": 3, "reps": "8-10", "rir": "1 / 1 / 0-1", "rest": "3'"}, {"exercise": "Pressa ROM profondo", "sets": 3, "reps": "6-8", "rir": "2 / 1 / 1", "rest": "3-4'"}, {"exercise": "Pec fly", "sets": 3, "reps": "8-10", "rir": "1 / 1 / 0", "rest": "2'"}, {"exercise": "Deltoide posteriore al cavo", "sets": 3, "reps": "10-12", "rir": "1 / 1 / 0", "rest": "2'"}, {"exercise": "Hammer curl", "sets": 2, "reps": "8-10", "rir": "1 / 0", "rest": "2'"}, {"exercise": "Overhead triceps extension con manubrio singolo", "sets": 2, "reps": "8-10", "rir": "1-2 / 0-1", "rest": "2'"}]};
-            function activePlan(){ return currentWeek === 1 ? PLAN_V7 : (currentWeek <= 4 ? PLAN_V8 : PLAN_V9) }
-            function activePlanForWeek(w){ w = Number(w); return w === 1 ? PLAN_V7 : (w <= 4 ? PLAN_V8 : PLAN_V9) }
+            var PLAN_V10 = {"A": [{"exercise": "Squat / Hack squat", "sets": 3, "reps": "6-8", "rir": "2 / 1-2 / 1", "rest": "3-4'"}, {"exercise": "Pulley presa larga - upper back", "sets": 4, "reps": "8-10", "rir": "2 / 1 / 1 / 0-1", "rest": "3'"}, {"exercise": "Military / Shoulder press", "sets": 3, "reps": "6-8", "rir": "2 / 1 / 0-1", "rest": "3'"}, {"exercise": "Chest press", "sets": 3, "reps": "8-10", "rir": "2 / 1 / 0-1", "rest": "3'"}, {"exercise": "Leg curl seduto", "sets": 3, "reps": "8-10", "rir": "1 / 0-1 / 0", "rest": "2-3'"}, {"exercise": "Preacher / Panca Scott curl", "sets": 2, "reps": "8-10", "rir": "1-2 / 0-1", "rest": "2'"}, {"exercise": "Overhead triceps extension al cavo", "sets": 2, "reps": "8-10", "rir": "1-2 / 0-1", "rest": "2'"}, {"exercise": "Calf raise", "sets": 3, "reps": "10-15", "rir": "1 / 0 / 0*", "rest": "2'"}], "B": [{"exercise": "Lat machine presa prona", "sets": 3, "reps": "6-8", "rir": "2 / 1 / 0-1", "rest": "3'"}, {"exercise": "Hip thrust", "sets": 3, "reps": "6-8", "rir": "2 / 1-2 / 1", "rest": "3-4'"}, {"exercise": "Spinte inclinate manubri / multipower", "sets": 3, "reps": "8-10", "rir": "2 / 1 / 0-1", "rest": "3'"}, {"exercise": "Leg extension", "sets": 2, "reps": "8-10", "rir": "1-2 / 0-1", "rest": "2-3'"}, {"exercise": "Pulley in cifosi - focus grandorsale", "sets": 2, "reps": "8-10", "rir": "1-2 / 0-1", "rest": "2-3'"}, {"exercise": "Alzate laterali", "sets": 3, "reps": "10-12", "rir": "2 / 1 / 0-1", "rest": "2'"}, {"exercise": "Bayesian curl", "sets": 2, "reps": "8-10", "rir": "1-2 / 0-1", "rest": "2'"}, {"exercise": "Pushdown", "sets": 2, "reps": "8-10", "rir": "1-2 / 0-1", "rest": "2'"}], "C": [{"exercise": "Panca piana", "sets": 3, "reps": "6-8", "rir": "2 / 1-2 / 1", "rest": "3-4'"}, {"exercise": "Leg curl seduto", "sets": 3, "reps": "8-10", "rir": "1 / 0-1 / 0", "rest": "2-3'"}, {"exercise": "Lat machine presa neutra", "sets": 3, "reps": "8-10", "rir": "2 / 1 / 0-1", "rest": "3'"}, {"exercise": "Pressa ROM profondo", "sets": 3, "reps": "6-8", "rir": "2 / 1-2 / 1", "rest": "3-4'"}, {"exercise": "Pec fly", "sets": 3, "reps": "8-10", "rir": "2 / 1 / 0-1", "rest": "2'"}, {"exercise": "Deltoide posteriore al cavo", "sets": 3, "reps": "10-12", "rir": "2 / 1 / 0-1", "rest": "2'"}, {"exercise": "Hammer curl", "sets": 2, "reps": "10-12", "rir": "1-2 / 0-1", "rest": "2'"}, {"exercise": "Overhead triceps extension con manubri", "sets": 2, "reps": "10-12", "rir": "2 / 1", "rest": "2'"}]};
+            function activePlan(){ return currentWeek === 1 ? PLAN_V7 : (currentWeek <= 4 ? PLAN_V8 : (currentWeek <= 8 ? PLAN_V9 : PLAN_V10)) }
+            function activePlanForWeek(w){ w = Number(w); return w === 1 ? PLAN_V7 : (w <= 4 ? PLAN_V8 : (w <= 8 ? PLAN_V9 : PLAN_V10)) }
 
             /* Same key keeps existing Week 1 data. */
-            var STORAGE_KEY = "fullBodyTrackerV7", TOTAL_WEEKS = 8, currentWeek = 1, currentDay = "A";
+            var STORAGE_KEY = "fullBodyTrackerV7", TOTAL_WEEKS = 16, currentWeek = 1, currentDay = "A";
             var weekSelect = document.getElementById("weekSelect"), daySelect = document.getElementById("daySelect"), exerciseList = document.getElementById("exerciseList"), currentDayTitle = document.getElementById("currentDayTitle"), statusEl = document.getElementById("status"), importFile = document.getElementById("importFile"), menu = document.getElementById("menu"), timerDisplay = document.getElementById("timerDisplay"), timerStart = document.getElementById("timerStart"), timerStop = document.getElementById("timerStop"), timerReset = document.getElementById("timerReset");
 
             var timerElapsedMs = 0, timerStartedAt = null, timerInterval = null;
@@ -378,16 +399,146 @@
             function saveStore() { store.updatedAt = new Date().toISOString(); try { localStorage.setItem(STORAGE_KEY, JSON.stringify(store)) } catch (e) { } statusEl.textContent = "Salvato " + new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) }
             function ensureWeek(w) { if (!store.weeks[w]) store.weeks[w] = { A: {}, B: {}, C: {} }; if (!store.weeks[w].A) store.weeks[w].A = {}; if (!store.weeks[w].B) store.weeks[w].B = {}; if (!store.weeks[w].C) store.weeks[w].C = {}; return store.weeks[w] }
             function getExerciseData(w, d, e) { var week = ensureWeek(w); if (!week[d][e]) week[d][e] = { sets: {}, note: "" }; if (!week[d][e].sets) week[d][e].sets = {}; return week[d][e] }
-            function populateWeeks() { weekSelect.innerHTML = ""; for (var i = 1; i <= TOTAL_WEEKS; i++) { var o = document.createElement("option"); o.value = String(i); o.textContent = i === 1 ? "W1 · V7 calibrazione" : (i <= 4 ? "W" + i + " · V8" : "W" + i + " · V9"); weekSelect.appendChild(o) } weekSelect.value = String(currentWeek) }
-            function makeInput(v, p, m) { var el = document.createElement("input"); el.value = v == null ? "" : v; el.placeholder = p; el.inputMode = m; el.autocomplete = "off"; return el }
-            function updateSet(ei, si, key, value) { var d = getExerciseData(currentWeek, currentDay, ei); if (!d.sets[si]) d.sets[si] = {}; d.sets[si][key] = value; saveStore() }
-            function renderDay() { currentDayTitle.textContent = "Giorno " + currentDay + " · Settimana " + currentWeek + (currentWeek === 1 ? " · V7 calibrazione" : (currentWeek <= 4 ? " · V8" : " · V9")); exerciseList.innerHTML = ""; activePlan()[currentDay].forEach(function (ex, ei) { var saved = getExerciseData(currentWeek, currentDay, ei), card = document.createElement("section"); card.className = "exercise"; var head = document.createElement("div"); head.className = "exercise-head"; var name = document.createElement("div"); name.className = "exercise-name"; name.textContent = ex.exercise; var meta = document.createElement("div"); meta.className = "meta"; meta.textContent = ex.sets + " serie · " + ex.reps + " reps · RIR " + ex.rir + " · rec. " + ex.rest; head.appendChild(name); head.appendChild(meta); card.appendChild(head); var sets = document.createElement("div"); sets.className = "sets"; var grid = document.createElement("div"); grid.className = "grid";["Set", "Peso", "Reps", "RIR"].forEach(function (t) { var h = document.createElement("div"); h.className = "hdr"; h.textContent = t; grid.appendChild(h) }); for (var si = 0; si < ex.sets; si++) { (function (setIndex) { var row = saved.sets[setIndex] || {}, lab = document.createElement("div"); lab.textContent = String(setIndex + 1); grid.appendChild(lab); var weight = makeInput(row.weight, "kg", "decimal"), reps = makeInput(row.reps, "rep", "numeric"), rir = makeInput(row.rir, "RIR", "decimal"); weight.addEventListener("input", function () { updateSet(ei, setIndex, "weight", weight.value) }); reps.addEventListener("input", function () { updateSet(ei, setIndex, "reps", reps.value) }); rir.addEventListener("input", function () { updateSet(ei, setIndex, "rir", rir.value) }); grid.appendChild(weight); grid.appendChild(reps); grid.appendChild(rir) })(si) } sets.appendChild(grid); var ta = document.createElement("textarea"); ta.placeholder = "Note opzionali..."; ta.value = saved.note || ""; ta.addEventListener("input", function () { getExerciseData(currentWeek, currentDay, ei).note = ta.value; saveStore() }); sets.appendChild(ta); card.appendChild(sets); exerciseList.appendChild(card) }) }
+            function populateWeeks() {
+                weekSelect.innerHTML = "";
+                for (var i = 1; i <= TOTAL_WEEKS; i++) {
+                    var o = document.createElement("option");
+                    o.value = String(i);
+                    o.textContent = i === 1 ? "W1 · V7 calibrazione" : (i <= 4 ? "W" + i + " · V8" : (i <= 8 ? "W" + i + " · V9" : "W" + i + " · V10"));
+                    weekSelect.appendChild(o)
+                }
+                weekSelect.value = String(currentWeek)
+            }
+            function makeInput(v, placeholder, mode) {
+                var input = document.createElement("input");
+                input.value = v == null ? "" : String(v);
+                input.placeholder = placeholder;
+                input.inputMode = mode;
+                input.autocomplete = "off";
+                return input
+            }
+            function updateSet(ei, si, key, value) {
+                var data = getExerciseData(currentWeek, currentDay, ei);
+                if (!data.sets[si]) data.sets[si] = {};
+                data.sets[si][key] = value;
+                saveStore()
+            }
+            function proposedWeightForNextWeek(ei) {
+                if (currentWeek < 9) return null;
+                var previous = store.weeks[currentWeek - 1];
+                if (!previous || !previous[currentDay]) return null;
+                var source = previous[currentDay][ei];
+                if (!source || source.nextWeight == null || String(source.nextWeight).trim() === "") return null;
+                // Gli esercizi mantengono la posizione tra V9 e V10 anche quando cambiano nome.
+                return String(source.nextWeight)
+            }
+            function prefillNextWeight(ei, data) {
+                if (currentWeek < 9) return;
+                if (data.sets[0] && data.sets[0].weight != null && String(data.sets[0].weight).trim() !== "") return;
+                var proposed = proposedWeightForNextWeek(ei);
+                if (proposed === null) return;
+                if (!data.sets[0]) data.sets[0] = {};
+                data.sets[0].weight = proposed;
+                saveStore()
+            }
+            function renderDay() {
+                currentDayTitle.textContent = "Giorno " + currentDay + " · Settimana " + currentWeek + (currentWeek === 1 ? " · V7 calibrazione" : (currentWeek <= 4 ? " · V8" : (currentWeek <= 8 ? " · V9" : " · V10")));
+                exerciseList.innerHTML = "";
+                activePlan()[currentDay].forEach(function (ex, ei) {
+                    var saved = getExerciseData(currentWeek, currentDay, ei);
+                    prefillNextWeight(ei, saved);
+                    var card = document.createElement("section"); card.className = "exercise";
+                    var head = document.createElement("div"); head.className = "exercise-head";
+                    var name = document.createElement("div"); name.className = "exercise-name"; name.textContent = ex.exercise;
+                    var meta = document.createElement("div"); meta.className = "meta";
+                    meta.textContent = ex.sets + " serie · " + ex.reps + " reps · RIR " + ex.rir + " · rec. " + ex.rest;
+                    head.appendChild(name); head.appendChild(meta); card.appendChild(head);
+                    var sets = document.createElement("div"); sets.className = "sets";
+                    var grid = document.createElement("div"); grid.className = "grid";
+                    ["Set","Peso","Reps","RIR"].forEach(function(t){var h=document.createElement("div");h.className="hdr";h.textContent=t;grid.appendChild(h)});
+                    for (var si = 0; si < ex.sets; si++) {
+                        (function (setIndex) {
+                            var row = saved.sets[setIndex] || {};
+                            var lab = document.createElement("div"); lab.textContent = String(setIndex+1); grid.appendChild(lab);
+                            var weight = makeInput(row.weight,"kg","decimal"), reps = makeInput(row.reps,"rep","numeric"), rir = makeInput(row.rir,"RIR","decimal");
+                            weight.addEventListener("input",function(){updateSet(ei,setIndex,"weight",weight.value)});
+                            reps.addEventListener("input",function(){updateSet(ei,setIndex,"reps",reps.value)});
+                            rir.addEventListener("input",function(){updateSet(ei,setIndex,"rir",rir.value)});
+                            grid.appendChild(weight);grid.appendChild(reps);grid.appendChild(rir)
+                        })(si)
+                    }
+                    sets.appendChild(grid);
+                    if (currentWeek >= 8) {
+                        var extras = document.createElement("div"); extras.className = "extra-fields";
+                        var orderLabel = document.createElement("label"); orderLabel.textContent = "Ordine esecuzione";
+                        var order = makeInput(saved.order,"es. 3","numeric");
+                        order.type = "number"; order.min = "1"; order.max = "30"; order.step="1";
+                        order.addEventListener("input",function(){saved.order=order.value;saveStore()});
+                        orderLabel.appendChild(order);
+                        var nextLabel = document.createElement("label"); nextLabel.textContent = "Peso proposto W" + (currentWeek+1);
+                        var nextInput = makeInput(saved.nextWeight,"kg","decimal");
+                        nextInput.type="number";nextInput.min="0";nextInput.step="any";
+                        nextInput.addEventListener("input",function(){saved.nextWeight=nextInput.value;saveStore()});
+                        if (currentWeek === TOTAL_WEEKS) {nextLabel.textContent="Peso prossimo blocco"}
+                        nextLabel.appendChild(nextInput);
+                        extras.appendChild(orderLabel);extras.appendChild(nextLabel);sets.appendChild(extras)
+                    }
+                    var ta=document.createElement("textarea");ta.placeholder="Note opzionali...";ta.value=saved.note||"";
+                    ta.addEventListener("input",function(){saved.note=ta.value;saveStore()});
+                    sets.appendChild(ta);card.appendChild(sets);exerciseList.appendChild(card)
+                })
+            }
             function downloadFile(filename, content, mime) { var blob = new Blob([content], { type: mime }), url = URL.createObjectURL(blob), a = document.createElement("a"); a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function () { URL.revokeObjectURL(url) }, 500) }
-            function exportJSON() { downloadFile("full_body_v9_backup.json", JSON.stringify({ planV7: PLAN_V7, planV8: PLAN_V8, planV9: PLAN_V9, data: store }, null, 2), "application/json") }
-            function esc(v) { return '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"' }
-            function exportCSV() { var rows = [["week", "day", "exercise", "set", "weight", "reps", "rir", "note"]]; for (var w = 1; w <= TOTAL_WEEKS; w++) { var week = store.weeks[w]; if (!week) continue;["A", "B", "C"].forEach(function (d) { activePlanForWeek(w)[d].forEach(function (ex, ei) { var saved = week[d] && week[d][ei]; if (!saved) return; for (var si = 0; si < ex.sets; si++) { var s = saved.sets && saved.sets[si] ? saved.sets[si] : {}; if (s.weight || s.reps || s.rir || saved.note) rows.push([w, d, ex.exercise, si + 1, s.weight || "", s.reps || "", s.rir || "", saved.note || ""]) } }) }) } downloadFile("full_body_v9_progressi.csv", rows.map(function (r) { return r.map(esc).join(",") }).join("\n"), "text/csv;charset=utf-8") }
-            function buildSummary() { var t = "FULL BODY V9 - PROGRESSI\n"; for (var w = 1; w <= TOTAL_WEEKS; w++) { var week = store.weeks[w]; if (!week) continue; var wt = "";["A", "B", "C"].forEach(function (d) { var lines = []; activePlanForWeek(w)[d].forEach(function (ex, ei) { var saved = week[d] && week[d][ei]; if (!saved) return; var ss = []; for (var si = 0; si < ex.sets; si++) { var s = saved.sets && saved.sets[si] ? saved.sets[si] : {}; if (s.weight || s.reps || s.rir) ss.push("S" + (si + 1) + ": " + (s.weight || "?") + "kg x " + (s.reps || "?") + " @RIR " + (s.rir || "?")) } if (ss.length || saved.note) { var line = "- " + ex.exercise + ": " + ss.join(" | "); if (saved.note) line += " | Note: " + saved.note; lines.push(line) } }); if (lines.length) wt += "Giorno " + d + "\n" + lines.join("\n") + "\n" }); if (wt) t += "\n=== SETTIMANA " + w + " ===\n" + wt } return t }
-            function copySummary() { var text = buildSummary(); if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(text).then(function () { statusEl.textContent = "Riepilogo copiato" }).catch(function () { downloadFile("full_body_v9_riepilogo.txt", text, "text/plain;charset=utf-8") }) } else downloadFile("full_body_v9_riepilogo.txt", text, "text/plain;charset=utf-8") }
+            function exportJSON() {
+                downloadFile("full_body_v10_backup.json",JSON.stringify({planV7:PLAN_V7,planV8:PLAN_V8,planV9:PLAN_V9,planV10:PLAN_V10,data:store},null,2),"application/json")
+            }
+            function esc(v){return '"'+String(v==null?"":v).replace(/"/g,'""')+'"'}
+            function exportCSV() {
+                var rows=[["week","day","exercise","order","next_weight","set","weight","reps","rir","note"]];
+                for(var w=1;w<=TOTAL_WEEKS;w++){
+                    var week=store.weeks[w];if(!week)continue;
+                    ["A","B","C"].forEach(function(d){
+                        activePlanForWeek(w)[d].forEach(function(ex,ei){
+                            var saved=week[d]&&week[d][ei];if(!saved)return;
+                            for(var si=0;si<ex.sets;si++){
+                                var s=saved.sets&&saved.sets[si]?saved.sets[si]:{};
+                                if(s.weight||s.reps||s.rir||saved.note||saved.order||saved.nextWeight)
+                                    rows.push([w,d,ex.exercise,saved.order||"",saved.nextWeight||"",si+1,s.weight||"",s.reps||"",s.rir||"",saved.note||""])
+                            }
+                        })
+                    })
+                }
+                downloadFile("full_body_v10_progressi.csv",rows.map(function(r){return r.map(esc).join(",")}).join("\n"),"text/csv;charset=utf-8")
+            }
+            function buildSummary() {
+                var t="FULL BODY V10 - PROGRESSI\n";
+                for(var w=1;w<=TOTAL_WEEKS;w++){
+                    var week=store.weeks[w];if(!week)continue;
+                    var wt="";
+                    ["A","B","C"].forEach(function(d){
+                        var lines=[];
+                        activePlanForWeek(w)[d].forEach(function(ex,ei){
+                            var saved=week[d]&&week[d][ei];if(!saved)return;
+                            var ss=[];
+                            for(var si=0;si<ex.sets;si++){
+                                var s=saved.sets&&saved.sets[si]?saved.sets[si]:{};
+                                if(s.weight||s.reps||s.rir)ss.push("S"+(si+1)+": "+(s.weight||"?")+"kg x "+(s.reps||"?")+" @RIR "+(s.rir||"?"))
+                            }
+                            if(ss.length||saved.note||saved.order||saved.nextWeight){
+                                var line="- "+ex.exercise+": "+ss.join(" | ");
+                                if(saved.order)line+=" | Ordine: "+saved.order;
+                                if(saved.nextWeight)line+=" | Peso proposto: "+saved.nextWeight+"kg";
+                                if(saved.note)line+=" | Note: "+saved.note;
+                                lines.push(line)
+                            }
+                        });
+                        if(lines.length)wt+="Giorno "+d+"\n"+lines.join("\n")+"\n"
+                    });
+                    if(wt)t+="\n=== SETTIMANA "+w+" ===\n"+wt
+                }
+                return t
+            }
+            function copySummary() { var text = buildSummary(); if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(text).then(function () { statusEl.textContent = "Riepilogo copiato" }).catch(function () { downloadFile("full_body_v10_riepilogo.txt", text, "text/plain;charset=utf-8") }) } else downloadFile("full_body_v10_riepilogo.txt", text, "text/plain;charset=utf-8") }
             function importBackup(file) { var r = new FileReader(); r.onload = function () { try { var obj = JSON.parse(r.result), incoming = obj.data || obj; if (!incoming.weeks) throw new Error(); store = incoming; saveStore(); renderDay(); statusEl.textContent = "Backup ripristinato" } catch (e) { alert("Backup non valido") } }; r.readAsText(file) }
             weekSelect.addEventListener("change", function () { currentWeek = Number(weekSelect.value); renderDay() }); daySelect.addEventListener("change", function () { currentDay = daySelect.value; renderDay() }); document.getElementById("menuToggle").addEventListener("click", function (e) { e.stopPropagation(); menu.classList.toggle("open") }); document.addEventListener("click", function () { menu.classList.remove("open") }); document.querySelector(".menu-panel").addEventListener("click", function (e) { e.stopPropagation() }); document.getElementById("exportJson").addEventListener("click", exportJSON); document.getElementById("exportCsv").addEventListener("click", exportCSV); document.getElementById("copySummary").addEventListener("click", copySummary); document.getElementById("importBtn").addEventListener("click", function () { importFile.click() }); document.getElementById("resetWeek").addEventListener("click", function () { if (confirm("Vuoi cancellare tutti i dati della settimana " + currentWeek + "?")) { delete store.weeks[currentWeek]; saveStore(); renderDay() } }); importFile.addEventListener("change", function () { if (importFile.files && importFile.files[0]) importBackup(importFile.files[0]); importFile.value = "" }); timerStart.addEventListener("click", startTimer); timerStop.addEventListener("click", stopTimer); timerReset.addEventListener("click", resetTimer); updateTimerDisplay(); populateWeeks(); renderDay();
         })();
